@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Layout } from "./components/layout/Layout";
+import { getAllSections } from "./config/navigation";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const allSections = getAllSections();
+  const firstSection = allSections[0];
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Navigate to={firstSection.path} replace />} />
+
+          {allSections.map((section) => (
+            <Route key={section.path} path={section.path.substring(1)}>
+              <Route
+                index
+                element={
+                  section.component ? (
+                    <section.component />
+                  ) : section.subItems && section.subItems.length > 0 ? (
+                    <Navigate to={section.subItems[0].path} replace />
+                  ) : (
+                    <div className="p-8">
+                      <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                        {section.name}
+                      </h1>
+                      <p className="text-gray-600">
+                        {section.name} page content will be displayed here.
+                      </p>
+                    </div>
+                  )
+                }
+              />
+              {section.subItems?.map((subItem) => {
+                return (
+                  <Route
+                    key={subItem.path}
+                    path={subItem.path.replace(section.path + "/", "")}
+                    element={
+                      subItem.element || (
+                        <div className="p-8">
+                          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                            {subItem.name}
+                          </h1>
+                          <p className="text-gray-600">
+                            {section.name} - {subItem.name} page content will be
+                            displayed here.
+                          </p>
+                        </div>
+                      )
+                    }
+                  />
+                );
+              })}
+            </Route>
+          ))}
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
