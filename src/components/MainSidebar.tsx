@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { theme } from "../../config/theme";
-import { mainNavigation, settingsNavigation } from "../../config/navigation";
-import LionLogo from "../../assets/lionlogo.png";
+import { theme } from "../config/theme";
+import { mainNavigation, settingsNavigation } from "../config/navigation";
+import LionLogo from "../assets/lionlogo.png";
 
 interface MainSidebarProps {
   isOpen: boolean;
@@ -52,7 +52,7 @@ export const MainSidebar = ({ isOpen, onClose }: MainSidebarProps) => {
               className={`relative flex flex-col items-center justify-center w-16 h-16 rounded-lg transition-colors ${
                 isActive(item.path)
                   ? `${theme.classes.text}`
-                  : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                  : "text-white hover:bg-gray-800"
               }`}
             >
               {isActive(item.path) && (
@@ -73,7 +73,7 @@ export const MainSidebar = ({ isOpen, onClose }: MainSidebarProps) => {
             className={`relative flex flex-col items-center justify-center w-16 h-16 rounded-lg transition-colors ${
               isActive(settingsNavigation.path)
                 ? `${theme.classes.text}`
-                : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                : "text-white hover:bg-gray-800"
             }`}
           >
             {isActive(settingsNavigation.path) && (

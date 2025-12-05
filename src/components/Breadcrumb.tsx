@@ -7,9 +7,10 @@ import {
   faArrowDown,
   faSearch,
   faBell,
+  faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
-import { theme } from "../../config/theme";
-import { getAllSections, getSubItemsForPath } from "../../config/navigation";
+import { theme } from "../config/theme";
+import { getAllSections, getSubItemsForPath } from "../config/navigation";
 
 interface Organization {
   id: string;
@@ -73,10 +74,12 @@ export const Breadcrumb = ({
 }: BreadcrumbProps) => {
   const location = useLocation();
   const [showOrgDropdown, setShowOrgDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(organizations[0]);
   const [orgFilter, setOrgFilter] = useState("");
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   const { page, icon } = getPageInfo(location.pathname);
 
@@ -90,7 +93,7 @@ export const Breadcrumb = ({
     setOrgFilter("");
   };
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -101,16 +104,23 @@ export const Breadcrumb = ({
       ) {
         setShowOrgDropdown(false);
       }
+
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowUserDropdown(false);
+      }
     };
 
-    if (showOrgDropdown) {
+    if (showOrgDropdown || showUserDropdown) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showOrgDropdown]);
+  }, [showOrgDropdown, showUserDropdown]);
 
   return (
     <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -188,7 +198,7 @@ export const Breadcrumb = ({
                       className={`w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 ${theme.classes.focusRing}`}
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                      Q
+                      <FontAwesomeIcon icon={faSearch} className="w-3 h-3" />
                     </span>
                   </div>
                 </div>
@@ -226,22 +236,46 @@ export const Breadcrumb = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+        <div className="flex items-center gap-3">
+          <button className="w-9 h-9 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors">
             <FontAwesomeIcon
               icon={faSearch}
-              className="w-3 h-3 text-gray-600"
+              className="w-4 h-4 text-gray-600"
             />
           </button>
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative hidden sm:block">
-            <FontAwesomeIcon icon={faBell} className="w-3 h-3 text-gray-600" />
-            <span className="absolute top-3 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          <button className="relative w-9 h-9 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors">
+            <FontAwesomeIcon icon={faBell} className="w-4 h-4 text-gray-600" />
+            <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-red-500 rounded-full flex items-center justify-center">
+              <span className="text-[10px] font-bold text-white leading-none">
+                3
+              </span>
+            </span>
           </button>
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block">
-            <div className="w-5 h-5 text-gray-600">?</div>
+          <button className="w-9 h-9 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors">
+            <FontAwesomeIcon
+              icon={faCircleQuestion}
+              className="w-4 h-4 text-gray-600"
+            />
           </button>
-          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-medium text-sm">JA</span>
+
+          <div className="relative" ref={userDropdownRef}>
+            <button
+              onClick={() => setShowUserDropdown(!showUserDropdown)}
+              className="w-9 h-9 bg-blue-600 rounded flex items-center justify-center hover:bg-blue-700 transition-colors"
+            >
+              <span className="text-white font-semibold text-sm">JA</span>
+            </button>
+
+            {showUserDropdown && (
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-[100]">
+                <button className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors font-medium">
+                  Account Settings
+                </button>
+                <button className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors font-medium">
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -253,6 +287,7 @@ export const Breadcrumb = ({
               onClick={() => {
                 onMainMenuClick();
                 setShowOrgDropdown(false);
+                setShowUserDropdown(false);
               }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               title="Open main menu"
@@ -264,9 +299,12 @@ export const Breadcrumb = ({
             </button>
           </div>
 
-          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-medium text-sm">JA</span>
-          </div>
+          <button
+            onClick={() => setShowUserDropdown(!showUserDropdown)}
+            className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center hover:bg-blue-700 transition-colors"
+          >
+            <span className="text-white font-semibold text-sm">JA</span>
+          </button>
         </div>
 
         <div className="flex items-center justify-between px-4 py-2">
@@ -343,7 +381,7 @@ export const Breadcrumb = ({
                         className={`w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 ${theme.classes.focusRing}`}
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                        Q
+                        <FontAwesomeIcon icon={faSearch} className="w-3 h-3" />
                       </span>
                     </div>
                   </div>

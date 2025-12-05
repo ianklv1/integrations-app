@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Sidebar } from "./Sidebar";
-import { MainSidebar } from "./MainSidebar";
-import { Breadcrumb } from "./Breadcrumb";
+import { Sidebar } from "../Sidebar";
+import { MainSidebar } from "../MainSidebar";
+import { Breadcrumb } from "../Breadcrumb";
 import { hasSecondarySidebar } from "../../config/navigation";
 
 export const Layout = () => {
@@ -23,13 +23,13 @@ export const Layout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
       <MainSidebar
         isOpen={isMainSidebarOpen}
         onClose={() => setIsMainSidebarOpen(false)}
       />
 
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 min-w-0">
         <Breadcrumb
           onMenuClick={handleOpenSecondarySidebar}
           onMainMenuClick={handleOpenMainSidebar}
@@ -41,7 +41,7 @@ export const Layout = () => {
             isOpen={isSecondarySidebarOpen}
             onClose={() => setIsSecondarySidebarOpen(false)}
           />
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto bg-gray-50">
             <Outlet />
           </main>
         </div>

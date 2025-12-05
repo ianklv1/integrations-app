@@ -20,7 +20,7 @@ import {
   faCamera,
   faComputer,
 } from "@fortawesome/free-solid-svg-icons";
-import { Integrations } from "../pages/settings/organization/Integrations";
+import { IntegrationsPage } from "../pages/settings/organization/Integrations/Integrations";
 
 export interface NavItem {
   name: string;
@@ -107,7 +107,7 @@ export const settingsNavigation: MainNavSection = {
       icon: faPlug,
       path: "/settings/org/integrations",
       section: "Organisation",
-      element: <Integrations />,
+      element: <IntegrationsPage />,
     },
     {
       name: "Configuration",

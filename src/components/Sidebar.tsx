@@ -4,8 +4,8 @@ import {
   getSubItemsForPath,
   getSectionTitle,
   type NavItem,
-} from "../../config/navigation";
-import { theme } from "../../config/theme";
+} from "../config/navigation";
+import { theme } from "../config/theme";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           item.disabled
             ? "cursor-not-allowed opacity-50"
             : isActive
-            ? "bg-green-600 text-white"
+            ? `${theme.classes.bg} text-white`
             : "text-gray-700 hover:bg-gray-100"
         }`}
         onClickCapture={(e) => {

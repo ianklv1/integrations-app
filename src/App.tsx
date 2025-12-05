@@ -4,13 +4,15 @@ import { getAllSections } from "./config/navigation";
 
 function App() {
   const allSections = getAllSections();
-  const firstSection = allSections[0];
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to={firstSection.path} replace />} />
+          <Route
+            index
+            element={<Navigate to={"/settings/org/integrations"} replace />}
+          />
 
           {allSections.map((section) => (
             <Route key={section.path} path={section.path.substring(1)}>
